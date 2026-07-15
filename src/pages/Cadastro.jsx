@@ -1,28 +1,45 @@
 import { useState } from 'react';
-import { useAuth } from '../context/AuthContext.jsx';
 import { api } from '../services/api.js';
 
-export default function Login({ onCadastro }) {
-  const { login } = useAuth();
-  const [form, setForm] = useState({ email: '', senha: '' });
+export default function Cadastro({ onVoltar }) {
+  const [form, setForm] = useState({ nome: '', email: '', senha: '' });
   const [erro, setErro] = useState('');
+  const [sucesso, setSucesso] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const resposta = await api.post('/auth/login', form);
+    console.log('Enviando:', form);
+    const resposta = await api.post('/auth/cadastro', form);
+    console.log('Resposta:', resposta);
 
-    if (typeof resposta === 'string') {
-      login(resposta);
+    if (resposta.id) {
+      setSucesso(true);
     } else {
-      setErro('Email ou senha inválidos');
+      setErro('Erro ao cadastrar. Tente outro email.');
     }
   };
+
+  if (sucesso) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="bg-gray-800 p-8 rounded-2xl text-center">
+          <p className="text-green-400 text-xl font-bold mb-4">Cadastro realizado!</p>
+          <button
+            onClick={onVoltar}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg"
+          >
+            Fazer login
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center">
       <div className="bg-gray-800 p-8 rounded-2xl shadow-xl w-full max-w-md">
-        <h1 className="text-3xl font-bold text-white mb-2">Gestão Financeira</h1>
-        <p className="text-gray-400 mb-8">Faça login para continuar</p>
+        <h1 className="text-3xl font-bold text-white mb-2">Criar conta</h1>
+        <p className="text-gray-400 mb-8">Preencha os dados para se cadastrar</p>
 
         {erro && (
           <div className="bg-red-500/20 border border-red-500 text-red-400 px-4 py-3 rounded-lg mb-6">
@@ -31,6 +48,17 @@ export default function Login({ onCadastro }) {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="text-gray-400 text-sm mb-1 block">Nome</label>
+            <input
+              type="text"
+              value={form.nome}
+              onChange={(e) => setForm({ ...form, nome: e.target.value })}
+              className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Seu nome"
+            />
+          </div>
+
           <div>
             <label className="text-gray-400 text-sm mb-1 block">Email</label>
             <input
@@ -57,15 +85,15 @@ export default function Login({ onCadastro }) {
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors"
           >
-            Entrar
+            Cadastrar
           </button>
 
           <button
             type="button"
-            onClick={onCadastro}
+            onClick={onVoltar}
             className="w-full text-gray-400 hover:text-white py-2 transition-colors"
           >
-            Criar conta
+            Já tenho conta
           </button>
         </form>
       </div>
