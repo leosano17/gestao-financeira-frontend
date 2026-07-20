@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = 'https://gestao-financeira-production-3250.up.railway.app';
 
 const getToken = () => localStorage.getItem('token');
 
