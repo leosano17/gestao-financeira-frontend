@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { api } from '../services/api.js';
 
-export default function Dashboard() {
+export default function Dashboard({ onRelatorios }) {
   const { logout } = useAuth();
   const [saldo, setSaldo] = useState(null);
   const [transacoes, setTransacoes] = useState([]);
@@ -59,12 +59,20 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gray-900 text-white">
       <nav className="bg-gray-800 px-6 py-4 flex justify-between items-center">
         <h1 className="text-xl font-bold text-blue-400">Gestão Financeira</h1>
-        <button
-          onClick={logout}
-          className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-sm transition-colors"
-        >
-          Sair
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={onRelatorios}
+            className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-sm transition-colors"
+          >
+            Relatórios
+          </button>
+          <button
+            onClick={logout}
+            className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-sm transition-colors"
+          >
+            Sair
+          </button>
+        </div>
       </nav>
 
       <div className="p-6">
