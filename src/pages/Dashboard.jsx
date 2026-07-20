@@ -2,6 +2,11 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { api } from '../services/api.js';
 
+const meses = [
+  'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+];
+
 export default function Dashboard({ onRelatorios }) {
   const { logout } = useAuth();
   const [saldo, setSaldo] = useState(null);
@@ -10,6 +15,8 @@ export default function Dashboard({ onRelatorios }) {
   const [mostrarForm, setMostrarForm] = useState(false);
   const [novaCategoria, setNovaCategoria] = useState('');
   const [mostrarNovaCategoria, setMostrarNovaCategoria] = useState(false);
+  const [filtroMes, setFiltroMes] = useState(new Date().getMonth() + 1);
+  const [filtroAno, setFiltroAno] = useState(new Date().getFullYear());
   const [form, setForm] = useState({
     descricao: '',
     valor: '',
@@ -20,11 +27,14 @@ export default function Dashboard({ onRelatorios }) {
 
   useEffect(() => {
     carregarDados();
-  }, []);
+  }, [filtroMes, filtroAno]);
 
   const carregarDados = async () => {
     const saldoData = await api.get('/transacoes/saldo');
-    const transacoesData = await api.get('/transacoes');
+    const dataInicio = `${filtroAno}-${String(filtroMes).padStart(2, '0')}-01`;
+    const ultimoDia = new Date(filtroAno, filtroMes, 0).getDate();
+    const dataFim = `${filtroAno}-${String(filtroMes).padStart(2, '0')}-${ultimoDia}`;
+    const transacoesData = await api.get(`/transacoes/filtrar?dataInicio=${dataInicio}&dataFim=${dataFim}&tamanho=100`);
     const categoriasData = await api.get('/categorias');
     setSaldo(saldoData);
     setTransacoes(transacoesData.content || []);
@@ -51,9 +61,12 @@ export default function Dashboard({ onRelatorios }) {
   };
 
   const handleDeletar = async (id) => {
+    if (!confirm('Tem certeza que deseja deletar esta transação?')) return;
     await api.delete(`/transacoes/${id}`);
     carregarDados();
   };
+
+  const anos = [2023, 2024, 2025, 2026, 2027];
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -84,7 +97,27 @@ export default function Dashboard({ onRelatorios }) {
         </div>
 
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold">Últimas transações</h2>
+          <div className="flex gap-3 items-center">
+            <h2 className="text-lg font-semibold">Transações</h2>
+            <select
+              value={filtroMes}
+              onChange={(e) => setFiltroMes(Number(e.target.value))}
+              className="bg-gray-700 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              {meses.map((m, i) => (
+                <option key={i} value={i + 1}>{m}</option>
+              ))}
+            </select>
+            <select
+              value={filtroAno}
+              onChange={(e) => setFiltroAno(Number(e.target.value))}
+              className="bg-gray-700 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              {anos.map((a) => (
+                <option key={a} value={a}>{a}</option>
+              ))}
+            </select>
+          </div>
           <button
             onClick={() => setMostrarForm(!mostrarForm)}
             className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm transition-colors"
@@ -208,25 +241,31 @@ export default function Dashboard({ onRelatorios }) {
         )}
 
         <div className="space-y-3">
-          {transacoes.map((t) => (
-            <div key={t.id} className="bg-gray-800 rounded-xl p-4 flex justify-between items-center">
-              <div>
-                <p className="font-medium">{t.descricao}</p>
-                <p className="text-gray-400 text-sm">{t.data} · {t.categoria?.nome}</p>
-              </div>
-              <div className="flex items-center gap-4">
-                <p className={`font-bold text-lg ${t.tipo === 'ENTRADA' ? 'text-green-400' : 'text-red-400'}`}>
-                  {t.tipo === 'ENTRADA' ? '+' : '-'} R$ {Number(t.valor).toFixed(2)}
-                </p>
-                <button
-                  onClick={() => handleDeletar(t.id)}
-                  className="text-gray-500 hover:text-red-400 transition-colors text-sm"
-                >
-                  Deletar
-                </button>
-              </div>
+          {transacoes.length === 0 ? (
+            <div className="bg-gray-800 rounded-xl p-8 text-center">
+              <p className="text-gray-400">Nenhuma transação neste período.</p>
             </div>
-          ))}
+          ) : (
+            transacoes.map((t) => (
+              <div key={t.id} className="bg-gray-800 rounded-xl p-4 flex justify-between items-center">
+                <div>
+                  <p className="font-medium">{t.descricao}</p>
+                  <p className="text-gray-400 text-sm">{t.data} · {t.categoria?.nome}</p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <p className={`font-bold text-lg ${t.tipo === 'ENTRADA' ? 'text-green-400' : 'text-red-400'}`}>
+                    {t.tipo === 'ENTRADA' ? '+' : '-'} R$ {Number(t.valor).toFixed(2)}
+                  </p>
+                  <button
+                    onClick={() => handleDeletar(t.id)}
+                    className="text-gray-500 hover:text-red-400 transition-colors text-sm"
+                  >
+                    Deletar
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>
