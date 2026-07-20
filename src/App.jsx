@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { useAuth } from './context/AuthContext';
-import Login from './pages/Login';
-import Cadastro from './pages/Cadastro';
-import Dashboard from './pages/Dashboard';
-import Relatorios from './pages/Relatorios';
+import { useAuth } from './context/AuthContext.jsx';
+import Login from './pages/Login.jsx';
+import Cadastro from './pages/Cadastro.jsx';
+import Dashboard from './pages/Dashboard.jsx';
+import Relatorios from './pages/Relatorios.jsx';
 
 export default function App() {
   const { isAuthenticated } = useAuth();
