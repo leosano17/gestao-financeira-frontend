@@ -19,9 +19,17 @@ export default function Login({ onCadastro }) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-      <div className="bg-gray-800 p-8 rounded-2xl shadow-xl w-full max-w-md">
-        <h1 className="text-3xl font-bold text-white mb-2">Gestão Financeira</h1>
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden"
+      style={{ background: 'linear-gradient(-45deg, #0f172a, #1e3a5f, #0f2027, #1a1a2e)' }}>
+      
+      <div className="absolute inset-0 opacity-30"
+        style={{ background: 'radial-gradient(circle at 20% 50%, #3b82f6 0%, transparent 50%), radial-gradient(circle at 80% 20%, #10b981 0%, transparent 50%), radial-gradient(circle at 50% 80%, #6366f1 0%, transparent 40%)' }}>
+      </div>
+
+      <div className="relative z-10 bg-gray-800/80 backdrop-blur-sm p-8 rounded-2xl shadow-2xl w-full max-w-md mx-4 border border-gray-700/50">
+        <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
+          ControlaBolso
+        </h1>
         <p className="text-gray-400 mb-8">Faça login para continuar</p>
 
         {erro && (
@@ -37,7 +45,7 @@ export default function Login({ onCadastro }) {
               type="email"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-gray-700/80 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-600/50"
               placeholder="seu@email.com"
             />
           </div>
@@ -48,14 +56,14 @@ export default function Login({ onCadastro }) {
               type="password"
               value={form.senha}
               onChange={(e) => setForm({ ...form, senha: e.target.value })}
-              className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-gray-700/80 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-600/50"
               placeholder="••••••••"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors"
+            className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-semibold py-3 rounded-lg transition-all duration-200 shadow-lg"
           >
             Entrar
           </button>
