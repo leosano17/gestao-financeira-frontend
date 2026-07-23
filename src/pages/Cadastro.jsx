@@ -9,9 +9,9 @@ export default function Cadastro({ onVoltar }) {
 
   const validarSenha = (senha) => {
     if (senha.length < 8) return 'Senha deve ter no mínimo 8 caracteres';
-    if (!/[A-Z]/.test(senha)) return 'Senha deve ter pelo menos uma letra maiúscula';
     if (!/[a-z]/.test(senha)) return 'Senha deve ter pelo menos uma letra minúscula';
-    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(senha)) return 'Senha deve ter pelo menos um caractere especial';
+    if (!/[A-Z]/.test(senha)) return 'Senha deve ter pelo menos uma letra maiúscula';
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(senha)) return 'Senha deve ter pelo menos um caractere especial (!@#$%...)';
     return null;
   };
 
@@ -103,7 +103,20 @@ export default function Cadastro({ onVoltar }) {
               placeholder="Mínimo 8 caracteres"
               required
             />
-            <p className="text-gray-500 text-xs mt-1">Use maiúscula, minúscula e caractere especial</p>
+            <div className="mt-2 space-y-1">
+              <p className={`text-xs ${form.senha.length >= 8 ? 'text-green-400' : 'text-gray-500'}`}>
+                ✓ Mínimo 8 caracteres
+              </p>
+              <p className={`text-xs ${/[A-Z]/.test(form.senha) ? 'text-green-400' : 'text-gray-500'}`}>
+                ✓ Uma letra maiúscula
+              </p>
+              <p className={`text-xs ${/[a-z]/.test(form.senha) ? 'text-green-400' : 'text-gray-500'}`}>
+                ✓ Uma letra minúscula
+              </p>
+              <p className={`text-xs ${/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(form.senha) ? 'text-green-400' : 'text-gray-500'}`}>
+                ✓ Um caractere especial (!@#$%...)
+              </p>
+            </div>
           </div>
 
           <div>
