@@ -1,4 +1,4 @@
-const BASE_URL = 'https://gestao-financeira-6csu.onrender.com';
+const BASE_URL = 'https://gestao-financeira-production-a67c.up.railway.app';
 
 const getToken = () => localStorage.getItem('token');
 
