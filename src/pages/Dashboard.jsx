@@ -91,7 +91,7 @@ export default function Dashboard({ onRelatorios }) {
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <nav className="bg-gray-800 px-6 py-4 flex justify-between items-center">
-        <h1 className="text-xl font-bold text-blue-400">Gestão Financeira</h1>
+        <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">ControlaBolso</h1>
         <div className="flex gap-3">
           <button onClick={onRelatorios} className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-sm transition-colors">
             Relatórios
