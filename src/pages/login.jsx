@@ -19,8 +19,7 @@ export default function Login({ onCadastro }) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden"
-      style={{ background: 'linear-gradient(-45deg, #0f172a, #1e3a5f, #0f2027, #1a1a2e)' }}>
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden animated-gradient">
       
       <div className="absolute inset-0 opacity-30"
         style={{ background: 'radial-gradient(circle at 20% 50%, #3b82f6 0%, transparent 50%), radial-gradient(circle at 80% 20%, #10b981 0%, transparent 50%), radial-gradient(circle at 50% 80%, #6366f1 0%, transparent 40%)' }}>
