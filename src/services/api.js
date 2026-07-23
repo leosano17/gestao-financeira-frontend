@@ -14,6 +14,9 @@ export const api = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });
+    if (response.status === 401) {
+      return { erro: 'unauthorized' };
+    }
     const text = await response.text();
     try {
       return JSON.parse(text);
@@ -25,6 +28,15 @@ export const api = {
   postAuth: async (endpoint, body) => {
     const response = await fetch(`${BASE_URL}${endpoint}`, {
       method: 'POST',
+      headers: headers(),
+      body: JSON.stringify(body),
+    });
+    return response.json();
+  },
+
+  put: async (endpoint, body) => {
+    const response = await fetch(`${BASE_URL}${endpoint}`, {
+      method: 'PUT',
       headers: headers(),
       body: JSON.stringify(body),
     });

@@ -11,7 +11,7 @@ export default function Login({ onCadastro }) {
     e.preventDefault();
     const resposta = await api.post('/auth/login', form);
 
-    if (typeof resposta === 'string') {
+    if (typeof resposta === 'string' && resposta.startsWith('eyJ')) {
       login(resposta);
     } else {
       setErro('Email ou senha inválidos');
