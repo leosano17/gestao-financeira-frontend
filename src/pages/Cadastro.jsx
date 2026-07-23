@@ -3,17 +3,38 @@ import { api } from '../services/api.js';
 
 export default function Cadastro({ onVoltar }) {
   const [form, setForm] = useState({ nome: '', email: '', senha: '' });
+  const [confirmarSenha, setConfirmarSenha] = useState('');
   const [erro, setErro] = useState('');
   const [sucesso, setSucesso] = useState(false);
 
+  const validarSenha = (senha) => {
+    if (senha.length < 8) return 'Senha deve ter no mínimo 8 caracteres';
+    if (!/[A-Z]/.test(senha)) return 'Senha deve ter pelo menos uma letra maiúscula';
+    if (!/[a-z]/.test(senha)) return 'Senha deve ter pelo menos uma letra minúscula';
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(senha)) return 'Senha deve ter pelo menos um caractere especial';
+    return null;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Enviando:', form);
+
+    const erroSenha = validarSenha(form.senha);
+    if (erroSenha) {
+      setErro(erroSenha);
+      return;
+    }
+
+    if (form.senha !== confirmarSenha) {
+      setErro('As senhas não coincidem');
+      return;
+    }
+
     const resposta = await api.post('/auth/cadastro', form);
-    console.log('Resposta:', resposta);
 
     if (resposta.id) {
       setSucesso(true);
+    } else if (resposta.senha) {
+      setErro(resposta.senha);
     } else {
       setErro('Erro ao cadastrar. Tente outro email.');
     }
@@ -56,6 +77,7 @@ export default function Cadastro({ onVoltar }) {
               onChange={(e) => setForm({ ...form, nome: e.target.value })}
               className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Seu nome"
+              required
             />
           </div>
 
@@ -67,6 +89,7 @@ export default function Cadastro({ onVoltar }) {
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="seu@email.com"
+              required
             />
           </div>
 
@@ -77,7 +100,21 @@ export default function Cadastro({ onVoltar }) {
               value={form.senha}
               onChange={(e) => setForm({ ...form, senha: e.target.value })}
               className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Mínimo 8 caracteres"
+              required
+            />
+            <p className="text-gray-500 text-xs mt-1">Use maiúscula, minúscula e caractere especial</p>
+          </div>
+
+          <div>
+            <label className="text-gray-400 text-sm mb-1 block">Confirmar senha</label>
+            <input
+              type="password"
+              value={confirmarSenha}
+              onChange={(e) => setConfirmarSenha(e.target.value)}
+              className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="••••••••"
+              required
             />
           </div>
 
