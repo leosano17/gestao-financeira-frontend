@@ -120,7 +120,7 @@ export default function Dashboard({ onRelatorios }) {
           </div>
           <button
             onClick={() => setMostrarForm(!mostrarForm)}
-            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm transition-colors"
+            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm transition-colors w-full sm:w-auto"
           >
             + Nova transação
           </button>
