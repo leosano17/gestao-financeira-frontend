@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { api } from '../services/api.js';
+import Loading from '../components/Loading.jsx';
 
 const meses = [
   'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -12,6 +13,7 @@ export default function Dashboard({ onRelatorios }) {
   const [saldo, setSaldo] = useState(null);
   const [transacoes, setTransacoes] = useState([]);
   const [categorias, setCategorias] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [mostrarForm, setMostrarForm] = useState(false);
   const [novaCategoria, setNovaCategoria] = useState('');
   const [mostrarNovaCategoria, setMostrarNovaCategoria] = useState(false);
@@ -31,6 +33,7 @@ export default function Dashboard({ onRelatorios }) {
   }, [filtroMes, filtroAno]);
 
   const carregarDados = async () => {
+    setLoading(true);
     const saldoData = await api.get('/transacoes/saldo');
     const dataInicio = `${filtroAno}-${String(filtroMes).padStart(2, '0')}-01`;
     const ultimoDia = new Date(filtroAno, filtroMes, 0).getDate();
@@ -40,19 +43,18 @@ export default function Dashboard({ onRelatorios }) {
     setSaldo(saldoData);
     setTransacoes(transacoesData.content || []);
     setCategorias(categoriasData || []);
+    setLoading(false);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const dados = { ...form, valor: parseFloat(form.valor) };
-
     if (transacaoEditando) {
       await api.put(`/transacoes/${transacaoEditando}`, dados);
       setTransacaoEditando(null);
     } else {
       await api.postAuth('/transacoes', dados);
     }
-
     setForm({ descricao: '', valor: '', data: '', tipo: 'ENTRADA', categoria: { id: '' } });
     setMostrarForm(false);
     carregarDados();
@@ -135,7 +137,6 @@ export default function Dashboard({ onRelatorios }) {
                 className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Ex: Salário, Mercado..." required />
             </div>
-
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="text-gray-400 text-sm mb-1 block">Valor</label>
@@ -149,7 +150,6 @@ export default function Dashboard({ onRelatorios }) {
                   className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required />
               </div>
             </div>
-
             <div>
               <label className="text-gray-400 text-sm mb-1 block">Tipo</label>
               <select value={form.tipo} onChange={(e) => setForm({ ...form, tipo: e.target.value })}
@@ -158,7 +158,6 @@ export default function Dashboard({ onRelatorios }) {
                 <option value="SAIDA">Saída</option>
               </select>
             </div>
-
             <div>
               <div className="flex justify-between items-center mb-1">
                 <label className="text-gray-400 text-sm">Categoria</label>
@@ -182,7 +181,6 @@ export default function Dashboard({ onRelatorios }) {
                 {categorias.map((c) => <option key={c.id} value={c.id}>{c.nome}</option>)}
               </select>
             </div>
-
             <div className="flex gap-3">
               <button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors">
                 {transacaoEditando ? 'Atualizar' : 'Salvar'}
@@ -196,7 +194,9 @@ export default function Dashboard({ onRelatorios }) {
         )}
 
         <div className="space-y-3">
-          {transacoes.length === 0 ? (
+          {loading ? (
+            <Loading />
+          ) : transacoes.length === 0 ? (
             <div className="bg-gray-800 rounded-xl p-8 text-center">
               <p className="text-gray-400">Nenhuma transação neste período.</p>
             </div>
