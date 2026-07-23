@@ -8,7 +8,7 @@ const meses = [
   'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
 ];
 
-export default function Dashboard({ onRelatorios }) {
+export default function Dashboard({ onRelatorios, onDespesas }) {
   const { logout } = useAuth();
   const [saldo, setSaldo] = useState(null);
   const [transacoes, setTransacoes] = useState([]);
@@ -93,6 +93,9 @@ export default function Dashboard({ onRelatorios }) {
       <nav className="bg-gray-800 px-6 py-4 flex justify-between items-center">
         <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">ControlaBolso</h1>
         <div className="flex gap-3">
+          <button onClick={onDespesas} className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-sm transition-colors">
+            Despesas Fixas
+          </button>
           <button onClick={onRelatorios} className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-sm transition-colors">
             Relatórios
           </button>
