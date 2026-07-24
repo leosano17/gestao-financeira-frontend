@@ -45,7 +45,7 @@ export default function Relatorios({ onVoltar }) {
     { nome: 'Saídas', valor: parseFloat(totalSaidas.toFixed(2)) },
   ];
 
-  const renderLabelPizza = ({ nome, percentual }) => `${nome}: ${percentual}%`;
+  const renderLabelPizza = ({ percentual }) => `${percentual}%`;
 
   if (loading) {
     return (
