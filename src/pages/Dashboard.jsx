@@ -90,49 +90,49 @@ export default function Dashboard({ onRelatorios, onDespesas }) {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      <nav className="bg-gray-800 px-6 py-4 flex justify-between items-center">
-        <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">ControlaBolso</h1>
-        <div className="flex gap-3">
-          <button onClick={onDespesas} className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-sm transition-colors">
-            Despesas Fixas
+      <nav className="bg-gray-800 px-4 py-4 flex justify-between items-center">
+        <h1 className="text-lg font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">ControlaBolso</h1>
+        <div className="flex gap-2">
+          <button onClick={onDespesas} className="bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded-lg text-xs transition-colors">
+            Despesas
           </button>
-          <button onClick={onRelatorios} className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-sm transition-colors">
+          <button onClick={onRelatorios} className="bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded-lg text-xs transition-colors">
             Relatórios
           </button>
-          <button onClick={logout} className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-sm transition-colors">
+          <button onClick={logout} className="bg-red-600 hover:bg-red-700 px-3 py-2 rounded-lg text-xs transition-colors">
             Sair
           </button>
         </div>
       </nav>
 
-      <div className="p-6">
-        <div className="bg-gray-800 rounded-2xl p-6 mb-6">
+      <div className="p-4">
+        <div className="bg-gray-800 rounded-2xl p-5 mb-4">
           <p className="text-gray-400 text-sm mb-1">Saldo atual</p>
-          <p className={`text-4xl font-bold ${saldo >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+          <p className={`text-3xl font-bold ${saldo >= 0 ? 'text-green-400' : 'text-red-400'}`}>
             R$ {saldo !== null ? Number(saldo).toFixed(2) : '...'}
           </p>
         </div>
 
-        <div className="flex justify-between items-center mb-4">
-          <div className="flex gap-3 items-center">
+        <div className="flex flex-col gap-3 mb-4">
+          <div className="flex flex-wrap gap-2 items-center">
             <h2 className="text-lg font-semibold">Transações</h2>
             <select value={filtroMes} onChange={(e) => setFiltroMes(Number(e.target.value))}
-              className="bg-gray-700 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+              className="bg-gray-700 text-white px-2 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
               {meses.map((m, i) => <option key={i} value={i + 1}>{m}</option>)}
             </select>
             <select value={filtroAno} onChange={(e) => setFiltroAno(Number(e.target.value))}
-              className="bg-gray-700 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+              className="bg-gray-700 text-white px-2 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
               {anos.map((a) => <option key={a} value={a}>{a}</option>)}
             </select>
           </div>
           <button onClick={() => { setMostrarForm(!mostrarForm); setTransacaoEditando(null); setForm({ descricao: '', valor: '', data: '', tipo: 'ENTRADA', categoria: { id: '' } }); }}
-            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm transition-colors w-full sm:w-auto">
+            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm transition-colors w-full">
             + Nova transação
           </button>
         </div>
 
         {mostrarForm && (
-          <form onSubmit={handleSubmit} className="bg-gray-800 rounded-2xl p-6 mb-6 space-y-4">
+          <form onSubmit={handleSubmit} className="bg-gray-800 rounded-2xl p-5 mb-4 space-y-4">
             <h3 className="text-white font-semibold">{transacaoEditando ? 'Editar transação' : 'Nova transação'}</h3>
             <div>
               <label className="text-gray-400 text-sm mb-1 block">Descrição</label>
@@ -140,17 +140,17 @@ export default function Dashboard({ onRelatorios, onDespesas }) {
                 className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Ex: Salário, Mercado..." required />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="text-gray-400 text-sm mb-1 block">Valor</label>
                 <input type="number" step="0.01" value={form.valor} onChange={(e) => setForm({ ...form, valor: e.target.value })}
-                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full bg-gray-700 text-white px-3 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="0.00" required />
               </div>
               <div>
                 <label className="text-gray-400 text-sm mb-1 block">Data</label>
                 <input type="date" value={form.data} onChange={(e) => setForm({ ...form, data: e.target.value })}
-                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+                  className="w-full bg-gray-700 text-white px-3 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required />
               </div>
             </div>
             <div>
@@ -172,7 +172,7 @@ export default function Dashboard({ onRelatorios, onDespesas }) {
               {mostrarNovaCategoria && (
                 <div className="flex gap-2 mb-2">
                   <input type="text" value={novaCategoria} onChange={(e) => setNovaCategoria(e.target.value)}
-                    className="flex-1 bg-gray-700 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="flex-1 bg-gray-700 text-white px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Nome da categoria" />
                   <button type="button" onClick={handleNovaCategoria}
                     className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm">Salvar</button>
@@ -205,19 +205,21 @@ export default function Dashboard({ onRelatorios, onDespesas }) {
             </div>
           ) : (
             transacoes.map((t) => (
-              <div key={t.id} className="bg-gray-800 rounded-xl p-4 flex justify-between items-center">
-                <div>
-                  <p className="font-medium">{t.descricao}</p>
-                  <p className="text-gray-400 text-sm">{t.data} · {t.categoria?.nome}</p>
-                </div>
-                <div className="flex items-center gap-4">
+              <div key={t.id} className="bg-gray-800 rounded-xl p-4">
+                <div className="flex justify-between items-start mb-2">
+                  <div className="flex-1 mr-2">
+                    <p className="font-medium">{t.descricao}</p>
+                    <p className="text-gray-400 text-sm">{t.data} · {t.categoria?.nome}</p>
+                  </div>
                   <p className={`font-bold text-lg ${t.tipo === 'ENTRADA' ? 'text-green-400' : 'text-red-400'}`}>
                     {t.tipo === 'ENTRADA' ? '+' : '-'} R$ {Number(t.valor).toFixed(2)}
                   </p>
-                  <button onClick={() => handleEditar(t)} className="text-gray-500 hover:text-blue-400 transition-colors text-sm">
+                </div>
+                <div className="flex gap-3 justify-end">
+                  <button onClick={() => handleEditar(t)} className="text-blue-400 hover:text-blue-300 transition-colors text-sm px-3 py-1 border border-blue-400/30 rounded-lg">
                     Editar
                   </button>
-                  <button onClick={() => handleDeletar(t.id)} className="text-gray-500 hover:text-red-400 transition-colors text-sm">
+                  <button onClick={() => handleDeletar(t.id)} className="text-red-400 hover:text-red-300 transition-colors text-sm px-3 py-1 border border-red-400/30 rounded-lg">
                     Deletar
                   </button>
                 </div>
