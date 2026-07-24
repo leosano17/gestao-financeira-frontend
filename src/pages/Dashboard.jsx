@@ -11,6 +11,8 @@ const meses = [
 export default function Dashboard({ onRelatorios, onDespesas }) {
   const { logout } = useAuth();
   const [saldo, setSaldo] = useState(null);
+  const [saldoPrevisto, setSaldoPrevisto] = useState(null);
+  const [despesasVencendo, setDespesasVencendo] = useState([]);
   const [transacoes, setTransacoes] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -35,12 +37,20 @@ export default function Dashboard({ onRelatorios, onDespesas }) {
   const carregarDados = async () => {
     setLoading(true);
     const saldoData = await api.get('/transacoes/saldo');
+    const saldoPrevistoData = await api.get('/pagamentos-despesas/saldo-previsto');
     const dataInicio = `${filtroAno}-${String(filtroMes).padStart(2, '0')}-01`;
     const ultimoDia = new Date(filtroAno, filtroMes, 0).getDate();
     const dataFim = `${filtroAno}-${String(filtroMes).padStart(2, '0')}-${ultimoDia}`;
     const transacoesData = await api.get(`/transacoes/filtrar?dataInicio=${dataInicio}&dataFim=${dataFim}&tamanho=100`);
     const categoriasData = await api.get('/categorias');
+    const despesasData = await api.get('/despesas-fixas');
+
+    const hoje = new Date().getDate();
+    const vencendoHoje = (despesasData || []).filter(d => d.diaVencimento === hoje);
+
     setSaldo(saldoData);
+    setSaldoPrevisto(saldoPrevistoData);
+    setDespesasVencendo(vencendoHoje);
     setTransacoes(transacoesData.content || []);
     setCategorias(categoriasData || []);
     setLoading(false);
@@ -87,6 +97,9 @@ export default function Dashboard({ onRelatorios, onDespesas }) {
   };
 
   const anos = [2023, 2024, 2025, 2026, 2027];
+  const saldoFinal = saldo !== null && saldoPrevisto !== null
+    ? Number(saldo) - Number(saldoPrevisto)
+    : null;
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -106,11 +119,35 @@ export default function Dashboard({ onRelatorios, onDespesas }) {
       </nav>
 
       <div className="p-4">
-        <div className="bg-gray-800 rounded-2xl p-5 mb-4">
-          <p className="text-gray-400 text-sm mb-1">Saldo atual</p>
-          <p className={`text-3xl font-bold ${saldo >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-            R$ {saldo !== null ? Number(saldo).toFixed(2) : '...'}
-          </p>
+
+        {despesasVencendo.length > 0 && (
+          <div className="bg-yellow-500/20 border border-yellow-500/50 rounded-xl p-4 mb-4">
+            <p className="text-yellow-400 font-semibold text-sm mb-1">⚠️ Despesas vencendo hoje!</p>
+            {despesasVencendo.map(d => (
+              <p key={d.id} className="text-yellow-300 text-sm">• {d.descricao} — R$ {Number(d.valor).toFixed(2)}</p>
+            ))}
+            <button onClick={onDespesas} className="text-yellow-400 text-xs mt-2 underline">
+              Ver despesas fixas →
+            </button>
+          </div>
+        )}
+
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          <div className="bg-gray-800 rounded-2xl p-4">
+            <p className="text-gray-400 text-xs mb-1">Saldo atual</p>
+            <p className={`text-2xl font-bold ${saldo >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+              R$ {saldo !== null ? Number(saldo).toFixed(2) : '...'}
+            </p>
+          </div>
+          <div className="bg-gray-800 rounded-2xl p-4">
+            <p className="text-gray-400 text-xs mb-1">Saldo previsto</p>
+            <p className={`text-2xl font-bold ${saldoFinal >= 0 ? 'text-blue-400' : 'text-red-400'}`}>
+              R$ {saldoFinal !== null ? saldoFinal.toFixed(2) : '...'}
+            </p>
+            {saldoPrevisto > 0 && (
+              <p className="text-gray-500 text-xs mt-1">- R$ {Number(saldoPrevisto).toFixed(2)} em fixas</p>
+            )}
+          </div>
         </div>
 
         <div className="flex flex-col gap-3 mb-4">
